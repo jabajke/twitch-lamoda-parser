@@ -2,12 +2,25 @@ from pydantic import BaseSettings
 
 
 class Web(BaseSettings):
-    host: str
-    port: int
-    reload: bool = True
+    HOST: str
+    PORT: int
+    RELOAD: bool
 
     class Config:
         env_file = '.env'
 
 
-web = Web()
+class DatabaseSettings(BaseSettings):
+    DATABASE_URL: str
+    MONGO_INITDB_DATABASE: str
+
+    class Config:
+        env_file = '.env'
+
+
+class General:
+    web: Web = Web()
+    db: DatabaseSettings = DatabaseSettings()
+
+
+settings = General()
