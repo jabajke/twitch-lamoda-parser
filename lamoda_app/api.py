@@ -1,3 +1,5 @@
+import datetime
+
 from fastapi import APIRouter, Depends, status
 
 from .schemas import SectionLimitGenderSchema
@@ -7,7 +9,7 @@ router = APIRouter(prefix='/parse')
 
 
 @router.post(
-    '/scrapper',
+    '/api-scrapper',
     status_code=status.HTTP_200_OK
 )
 async def scrapper(

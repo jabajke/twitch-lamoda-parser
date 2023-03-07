@@ -1,6 +1,7 @@
 import pydantic
 import requests
 from bson import ObjectId
+from fastapi import HTTPException, status
 
 from src.core.database import lamoda_collection
 
@@ -18,6 +19,11 @@ class LamodaAPIDataService:
     @classmethod
     def create_lamoda_item(cls, data):
         if data is None:
-            lamoda_collection.insert_one(data)
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Lamoda is broke down, try again later"
+            )
+        if len(data) == 1:
+            lamoda_collection.insert_one(data[0])
         else:
             lamoda_collection.insert_many(data)
