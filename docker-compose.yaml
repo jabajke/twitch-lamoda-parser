@@ -17,6 +17,7 @@ services:
   mongo:
     image: mongo:latest
     container_name: mongo
+    command: mongod --noauth
     env_file:
       - .env
     volumes:

@@ -15,7 +15,7 @@ async def scrapper(
         service: LamodaAPIDataService = Depends()
 ):
     data = schema.dict()
-    url = "https://www.lamoda.ru/api/v1/recommendations/section?section={0}&limit={1}&gender={2}"
-    url = url.format(data.get('section'), data.get('limit'), data.get('gender'))
-    res = service.get_all(url)
-    return res
+    url = service.url.format(data.get('section'), data.get('limit'), data.get('gender'))
+    new_data = service.get_all(url)
+    service.create_lamoda_item(new_data.get('products'))
+    return new_data
