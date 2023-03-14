@@ -5,13 +5,14 @@ from bson import ObjectId
 from fastapi import HTTPException, status
 
 from src.core.database import all_collections
+from src.utils import add_created_at
 
 pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
 
 
 class LamodaAPIDataService:
-    url = "https://www.lamoda.ru/api/v1/recommendations/section?section={0}&limit={1}&gender={2}"
-    lamoda_collection = all_collections.get('lamoda')
+    _url = "https://www.lamoda.ru/api/v1/recommendations/section?section={0}&limit={1}&gender={2}"
+    _lamoda_collection = all_collections.get('lamoda')
 
     def get_all(self, url: str) -> dict:
         res = requests.get(url)
@@ -24,9 +25,9 @@ class LamodaAPIDataService:
                 detail="Lamoda is broke down, try again later"
             )
         if len(data) == 1:
-            self.lamoda_collection.insert_one(data[0])
+            self.lamoda_collection.insert_one(add_created_at(data[0]))
         else:
-            self.lamoda_collection.insert_many(data)
+            self.lamoda_collection.insert_many(add_created_at(data))
 
 
 class LamodaParserService:
@@ -53,9 +54,22 @@ class LamodaParserService:
                 'category': category
             }
             if price != '':
-                data.update({'price': float(price[:-3])})
+                data.update({'price': float(price[:-3].replace(' ', ''))})
                 item_list.append(data)
         return item_list
 
-    def insert_goods(self, goods: list) -> list:
-        self.lamoda_parser.insert_many(goods)
+    def insert_goods(self, goods: list) -> None:
+        self.lamoda_parser.insert_many(add_created_at(goods))
+
+
+class LamodaOutputDataService:
+    _lamoda_parser = all_collections.get('lamoda_parser')
+    _lamoda = all_collections.get('lamoda')
+
+    def output_parser_data(self, limit: int) -> list:
+        data = list(self.lamoda_parser.find())
+        return data[:limit]
+
+    def output_api_data(self, limit: int) -> list:
+        data = list(self.lamoda.find())
+        return data[:limit]

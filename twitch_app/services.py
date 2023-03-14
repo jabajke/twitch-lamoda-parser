@@ -2,6 +2,7 @@ import requests
 
 from src.core.database import all_collections
 from src.core.settings import settings
+from src.utils import add_created_at
 
 from .enums import TwitchTypes
 
@@ -53,7 +54,33 @@ class TwitchService:
         streamers = res.json()['data']
         return streamers
 
-    async def insert_obj(self, games, streamers, streams):
-        self._games.insert_many(games)
-        self._streams.insert_many(streams)
-        self._streamers.insert_many(streamers)
+    async def insert_obj(self, games, streamers, streams) -> None:
+        self._games.insert_many(add_created_at(games))
+        self._streams.insert_many(add_created_at(streams))
+        self._streamers.insert_many(add_created_at(streamers))
+
+
+class TwitchOutputDataService:
+    _games = all_collections.get('games')
+    _streams = all_collections.get('streams')
+    _streamers = all_collections.get('streamers')
+
+    def output_games(self, limit):
+        data = list(self._games.find())
+        return data[:limit]
+
+    def output_streams(self, limit):
+        data = list(self._streams.find())
+        return data[:limit]
+
+    def output_streamers(self, limit):
+        data = list(self._streamers.find())
+        return data[:limit]
+
+    def choose_output(self, data, limit):
+        if data.get('types') == 'games':
+            return self.output_games(limit)
+        elif data.get('types') == 'streams':
+            return self.output_streams(limit)
+        else:
+            return self.output_streamers(limit)
