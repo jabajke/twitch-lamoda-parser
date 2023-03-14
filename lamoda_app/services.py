@@ -5,6 +5,7 @@ from bson import ObjectId
 from fastapi import HTTPException, status
 
 from src.core.database import all_collections
+from src.utils import add_created_at
 
 pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
 
@@ -24,9 +25,9 @@ class LamodaAPIDataService:
                 detail="Lamoda is broke down, try again later"
             )
         if len(data) == 1:
-            self.lamoda_collection.insert_one(data[0])
+            self.lamoda_collection.insert_one(add_created_at(data[0]))
         else:
-            self.lamoda_collection.insert_many(data)
+            self.lamoda_collection.insert_many(add_created_at(data))
 
 
 class LamodaParserService:
@@ -53,9 +54,9 @@ class LamodaParserService:
                 'category': category
             }
             if price != '':
-                data.update({'price': float(price[:-3])})
+                data.update({'price': float(price[:-3].replace(' ', ''))})
                 item_list.append(data)
         return item_list
 
-    def insert_goods(self, goods: list) -> list:
-        self.lamoda_parser.insert_many(goods)
+    def insert_goods(self, goods: list) -> None:
+        self.lamoda_parser.insert_many(add_created_at(goods))
