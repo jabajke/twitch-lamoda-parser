@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, status
 
 from .schemas import LamodaUrlSchema, SectionLimitGenderSchema
-from .services import LamodaAPIDataService, LamodaParserService
+from .services import (LamodaAPIDataService, LamodaOutputDataService,
+                       LamodaParserService)
 
 router = APIRouter(prefix='/parse')
 
@@ -34,3 +35,25 @@ async def scrapper(
     goods = service.parser(response)
     service.insert_goods(goods)
     return goods
+
+
+@router.get(
+    '/lamoda-parser-data',
+    status_code=status.HTTP_200_OK
+)
+async def lamoda_parser_data(
+        service: LamodaOutputDataService = Depends(),
+        limit: int = 10,
+):
+    return service.output_parser_data(limit)
+
+
+@router.get(
+    '/lamoda-api-data',
+    status_code=status.HTTP_200_OK
+)
+async def lamoda_api_data(
+        service: LamodaOutputDataService = Depends(),
+        limit: int = 10,
+):
+    return service.output_api_data(limit)

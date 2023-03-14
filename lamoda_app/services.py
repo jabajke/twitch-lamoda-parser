@@ -11,8 +11,8 @@ pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
 
 
 class LamodaAPIDataService:
-    url = "https://www.lamoda.ru/api/v1/recommendations/section?section={0}&limit={1}&gender={2}"
-    lamoda_collection = all_collections.get('lamoda')
+    _url = "https://www.lamoda.ru/api/v1/recommendations/section?section={0}&limit={1}&gender={2}"
+    _lamoda_collection = all_collections.get('lamoda')
 
     def get_all(self, url: str) -> dict:
         res = requests.get(url)
@@ -60,3 +60,16 @@ class LamodaParserService:
 
     def insert_goods(self, goods: list) -> None:
         self.lamoda_parser.insert_many(add_created_at(goods))
+
+
+class LamodaOutputDataService:
+    _lamoda_parser = all_collections.get('lamoda_parser')
+    _lamoda = all_collections.get('lamoda')
+
+    def output_parser_data(self, limit: int) -> list:
+        data = list(self.lamoda_parser.find())
+        return data[:limit]
+
+    def output_api_data(self, limit: int) -> list:
+        data = list(self.lamoda.find())
+        return data[:limit]
