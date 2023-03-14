@@ -9,7 +9,7 @@ requests = "*"
 pymongo = "*"
 fastapi = "*"
 uvicorn = "*"
-python-dotenv = "*"
+pydantic = {extras = ["dotenv"], version = "*"}
 
 [dev-packages]
 flake8 = "*"

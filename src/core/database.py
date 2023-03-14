@@ -4,11 +4,26 @@ from lamoda_app.mongo_schemas import lamoda_item_schema
 
 from .settings import settings
 
-client = mongo_client.MongoClient(settings.db.DATABASE_URL)
+client = mongo_client.MongoClient(host=settings.db.DATABASE_URL)
+
 db = client[settings.db.MONGO_INITDB_DATABASE]
 
 
 def collections():
+    try:
+        db.validate_collection('streams')
+    except errors.OperationFailure:
+        db.create_collection('streams')
+
+    try:
+        db.validate_collection('games')
+    except errors.OperationFailure:
+        db.create_collection('games')
+
+    try:
+        db.validate_collection('streamers')
+    except errors.OperationFailure:
+        db.create_collection('streamers')
     try:
         db.validate_collection('lamoda')
     except errors.OperationFailure:
@@ -24,6 +39,9 @@ def collections():
         )
 
     return {
+        'streams': db['streams'],
+        'games': db['games'],
+        'streamers': db['streamers'],
         'lamoda': db['lamoda'],
         'lamoda_parser': db['lamoda_parser']
     }
