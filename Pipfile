@@ -10,6 +10,7 @@ pymongo = "*"
 fastapi = "*"
 uvicorn = "*"
 pydantic = {extras = ["dotenv"], version = "*"}
+aiokafka = "*"
 
 [dev-packages]
 flake8 = "*"

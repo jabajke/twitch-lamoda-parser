@@ -26,10 +26,20 @@ class TwitchSettings(BaseSettings):
         env_file = '.env'
 
 
+class KafkaSettings(BaseSettings):
+    KAFKA_BOOTSTRAP_SERVERS: str = "localhost:9092"
+    KAFKA_TOPIC: str = "kafka"
+    KAFKA_CONSUMER_GROUP: str = "group-id"
+
+    class Config:
+        env_file = '.env'
+
+
 class General:
     web: Web = Web()
     db: DatabaseSettings = DatabaseSettings()
-    twitch_settings = TwitchSettings()
+    twitch_settings: TwitchSettings = TwitchSettings()
+    kafka_settings: KafkaSettings = KafkaSettings()
 
 
 settings = General()
