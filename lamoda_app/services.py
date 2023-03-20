@@ -2,10 +2,8 @@ import pydantic
 import requests
 from bs4 import BeautifulSoup
 from bson import ObjectId
-from fastapi import HTTPException, status
 
 from src.core.database import all_collections
-from src.utils import add_created_at
 
 pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
 
@@ -17,17 +15,6 @@ class LamodaAPIDataService:
     def get_all(self, url: str) -> dict:
         res = requests.get(url)
         return res.json()
-
-    def create_lamoda_item(self, data: list) -> None:
-        if data is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Lamoda is broke down, try again later"
-            )
-        if len(data) == 1:
-            self.lamoda_collection.insert_one(add_created_at(data[0]))
-        else:
-            self.lamoda_collection.insert_many(add_created_at(data))
 
 
 class LamodaParserService:
@@ -58,18 +45,15 @@ class LamodaParserService:
                 item_list.append(data)
         return item_list
 
-    def insert_goods(self, goods: list) -> None:
-        self.lamoda_parser.insert_many(add_created_at(goods))
-
 
 class LamodaOutputDataService:
     _lamoda_parser = all_collections.get('lamoda_parser')
     _lamoda = all_collections.get('lamoda')
 
     def output_parser_data(self, limit: int) -> list:
-        data = list(self.lamoda_parser.find())
+        data = list(self._lamoda_parser.find())
         return data[:limit]
 
     def output_api_data(self, limit: int) -> list:
-        data = list(self.lamoda.find())
+        data = list(self._lamoda.find())
         return data[:limit]

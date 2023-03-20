@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from src.utils import send_to_kafka
 
 from .schemas import LamodaUrlSchema, SectionLimitGenderSchema
 from .services import (LamodaAPIDataService, LamodaOutputDataService,
@@ -18,7 +20,16 @@ async def api_scrapper(
     data = schema.dict()
     url = service.url.format(data.get('section'), data.get('limit'), data.get('gender'))
     new_data = service.get_all(url)
-    service.create_lamoda_item(new_data.get('products'))
+    if new_data.get('products') is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Lamoda is broke down, try again later"
+        )
+    else:
+        send_to_kafka(
+            goods=new_data.get('products'),
+            partition=0
+        )
     return new_data
 
 
@@ -33,7 +44,8 @@ async def scrapper(
     url = schema.dict().get('url')
     response = service.get_response(url)
     goods = service.parser(response)
-    service.insert_goods(goods)
+
+    send_to_kafka(goods, partition=1)
     return goods
 
 

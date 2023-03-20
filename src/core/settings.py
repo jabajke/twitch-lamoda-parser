@@ -27,7 +27,7 @@ class TwitchSettings(BaseSettings):
 
 
 class KafkaSettings(BaseSettings):
-    KAFKA_BOOTSTRAP_SERVERS: str = "localhost:9092"
+    KAFKA_BOOTSTRAP_SERVERS: str
     KAFKA_TOPIC: str = "kafka"
     KAFKA_CONSUMER_GROUP: str = "group-id"
 
