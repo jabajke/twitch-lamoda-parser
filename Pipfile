@@ -9,7 +9,10 @@ requests = "*"
 pymongo = "*"
 fastapi = "*"
 uvicorn = "*"
-python-dotenv = "*"
+pydantic = {extras = ["dotenv"], version = "*"}
+kafka-python = "*"
+fastapi-utils = "*"
+loguru = "*"
 
 [dev-packages]
 flake8 = "*"

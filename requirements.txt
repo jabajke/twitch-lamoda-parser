@@ -2,6 +2,8 @@ beautifulsoup4
 requests
 pymongo
 fastapi
-pydantic
 uvicorn
-python-dotenv
+pydantic[dotenv]
+kafka-python
+fastapi-utils
+loguru
