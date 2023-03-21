@@ -37,11 +37,21 @@ class KafkaSettings(BaseSettings):
         env_file = '.env'
 
 
+class RedisSettings(BaseSettings):
+    REDIS_HOST: str
+    REDIS_PORT: int = 6379
+    REDIS_DB: int = 0
+
+    class Config:
+        env_file = '.env'
+
+
 class General:
     web: Web = Web()
     db: DatabaseSettings = DatabaseSettings()
     twitch_settings: TwitchSettings = TwitchSettings()
     kafka_settings: KafkaSettings = KafkaSettings()
+    redis_settings: RedisSettings = RedisSettings()
 
 
 settings = General()

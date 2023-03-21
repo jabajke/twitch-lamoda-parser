@@ -16,8 +16,6 @@ services:
     env_file:
       - .env
     restart: always
-    environment:
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     networks:
       - app-tier
     depends_on:
@@ -70,6 +68,17 @@ services:
       - .env
     networks:
       - app-tier
+
+  redis:
+    image: redis:latest
+    container_name: "redis"
+    ports:
+      - "6379:6379"
+    depends_on:
+      - web
+    networks:
+      - app-tier
+
 
 
 volumes:
