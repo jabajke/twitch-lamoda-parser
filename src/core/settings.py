@@ -1,3 +1,5 @@
+import sys
+
 from pydantic import BaseSettings
 
 
@@ -43,3 +45,11 @@ class General:
 
 
 settings = General()
+
+
+class LoggerConfig:
+    config: dict = {
+        "handlers": [
+            {"sink": sys.stdout, "format": "{level}:     {message}"}
+        ]
+    }

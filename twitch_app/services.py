@@ -49,9 +49,9 @@ class TwitchService:
 
 
 class TwitchOutputDataService:
-    _games = all_collections.get('games')
-    _streams = all_collections.get('streams')
-    _streamers = all_collections.get('streamers')
+    _games = all_collections['games']
+    _streams = all_collections['streams']
+    _streamers = all_collections['streamers']
 
     def output_games(self, limit):
         data = list(self._games.find())

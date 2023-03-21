@@ -6,3 +6,4 @@ uvicorn
 pydantic[dotenv]
 kafka-python
 fastapi-utils
+loguru

@@ -3,12 +3,12 @@ from src.core.database import all_collections
 from src.utils import add_created_at
 
 
-class CoreService:
-    _lamoda_parser = all_collections.get('lamoda_parser')
-    _lamoda = all_collections.get('lamoda')
-    _games = all_collections.get('games')
-    _streams = all_collections.get('streams')
-    _streamers = all_collections.get('streamers')
+class InsertIntoMongoService:
+    _lamoda_parser = all_collections['lamoda_parser']
+    _lamoda = all_collections['lamoda']
+    _games = all_collections['games']
+    _streams = all_collections['streams']
+    _streamers = all_collections['streamers']
 
     consumer = setup.consumer
 

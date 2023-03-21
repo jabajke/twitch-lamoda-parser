@@ -18,7 +18,7 @@ class LamodaAPIDataService:
 
 
 class LamodaParserService:
-    lamoda_parser = all_collections.get('lamoda_parser')
+    lamoda_parser = all_collections['lamoda_parser']
 
     def get_response(self, url: pydantic.HttpUrl) -> requests.models.Response:
         res = requests.get(url)
@@ -47,8 +47,8 @@ class LamodaParserService:
 
 
 class LamodaOutputDataService:
-    _lamoda_parser = all_collections.get('lamoda_parser')
-    _lamoda = all_collections.get('lamoda')
+    _lamoda_parser = all_collections['lamoda_parser']
+    _lamoda = all_collections['lamoda']
 
     def output_parser_data(self, limit: int) -> list:
         data = list(self._lamoda_parser.find())

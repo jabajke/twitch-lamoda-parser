@@ -2,11 +2,14 @@ from fastapi import FastAPI
 from fastapi_utils.tasks import repeat_every
 from kafka import KafkaClient
 from kafka.admin import KafkaAdminClient, NewTopic
+from loguru import logger
 
 from lamoda_app import router as lamoda_router
-from src.core.settings import settings
-from src.services import CoreService
+from src.core.settings import LoggerConfig, settings
+from src.services import InsertIntoMongoService
 from twitch_app import router as twitch_router
+
+logger.configure(**LoggerConfig.config)
 
 app = FastAPI()
 
@@ -41,10 +44,10 @@ async def create_topic_if_not_exists(
     metadata = client.cluster
 
     if kafka_cfg.KAFKA_TOPIC not in metadata.topics():
-        print('Topic creation..')
+        logger.info('Topic creation..')
         topic = NewTopic(name=kafka_cfg.KAFKA_TOPIC, num_partitions=5, replication_factor=1)
         admin_client.create_topics(new_topics=[topic], validate_only=False)
-        print('Topic "{0}" was successfully created'.format(kafka_cfg.KAFKA_TOPIC))
+        logger.info('Topic "{0}" was successfully created'.format(kafka_cfg.KAFKA_TOPIC))
 
 
 @app.on_event("startup")
@@ -54,4 +57,4 @@ def insert_into_mongo() -> None:
     Insert into database every 20 minutes
     :return: None
     """
-    CoreService.insert_into_mongo()
+    InsertIntoMongoService.insert_into_mongo()
