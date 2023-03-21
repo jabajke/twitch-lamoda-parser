@@ -9,7 +9,7 @@ pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
 
 
 class LamodaAPIDataService:
-    _url = "https://www.lamoda.ru/api/v1/recommendations/section?section={0}&limit={1}&gender={2}"
+    url = "https://www.lamoda.ru/api/v1/recommendations/section?section={0}&limit={1}&gender={2}"
     _lamoda_collection = all_collections.get('lamoda')
 
     def get_all(self, url: str) -> dict:
