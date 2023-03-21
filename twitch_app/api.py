@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, status
 
+from src.utils import send_to_kafka
+
 from .schemas import OutputDataTwitchSchema
 from .services import TwitchOutputDataService, TwitchService
 
@@ -12,10 +14,17 @@ async def api_scrapper(twitch: TwitchService = Depends()):
     games = await twitch.get_games(token)
     streams, logins = await twitch.get_streams_logins(token)
     streamers = await twitch.get_users(token, logins)
-    await twitch.insert_obj(
-        games=games,
-        streamers=streamers,
-        streams=streams
+    send_to_kafka(
+        goods=games,
+        partition=3
+    )
+    send_to_kafka(
+        goods=streamers,
+        partition=2
+    )
+    send_to_kafka(
+        goods=streams,
+        partition=4
     )
     return {"mes": "ok"}
 

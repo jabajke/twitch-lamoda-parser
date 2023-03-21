@@ -2,16 +2,9 @@ import requests
 
 from src.core.database import all_collections
 from src.core.settings import settings
-from src.utils import add_created_at
-
-from .enums import TwitchTypes
 
 
 class TwitchService:
-    _games = all_collections.get('games')
-    _streams = all_collections.get('streams')
-    _streamers = all_collections.get('streamers')
-    _obj_type: TwitchTypes = TwitchTypes
 
     async def auth(self):
         data = {
@@ -54,16 +47,11 @@ class TwitchService:
         streamers = res.json()['data']
         return streamers
 
-    async def insert_obj(self, games, streamers, streams) -> None:
-        self._games.insert_many(add_created_at(games))
-        self._streams.insert_many(add_created_at(streams))
-        self._streamers.insert_many(add_created_at(streamers))
-
 
 class TwitchOutputDataService:
-    _games = all_collections.get('games')
-    _streams = all_collections.get('streams')
-    _streamers = all_collections.get('streamers')
+    _games = all_collections['games']
+    _streams = all_collections['streams']
+    _streamers = all_collections['streamers']
 
     def output_games(self, limit):
         data = list(self._games.find())

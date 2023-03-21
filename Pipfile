@@ -10,6 +10,9 @@ pymongo = "*"
 fastapi = "*"
 uvicorn = "*"
 pydantic = {extras = ["dotenv"], version = "*"}
+kafka-python = "*"
+fastapi-utils = "*"
+loguru = "*"
 
 [dev-packages]
 flake8 = "*"

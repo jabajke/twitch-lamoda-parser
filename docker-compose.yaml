@@ -1,5 +1,8 @@
 version: "3.8"
 
+networks:
+  app-tier:
+    driver: bridge
 
 services:
   web:
@@ -13,6 +16,13 @@ services:
     env_file:
       - .env
     restart: always
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    networks:
+      - app-tier
+    depends_on:
+      - kafka
+      - zookeeper
 
   mongo:
     image: mongo:latest
@@ -25,6 +35,42 @@ services:
     ports:
       - "6000:27017"
     restart: always
+    networks:
+      - app-tier
+
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    ports:
+      - '2181:2181'
+    env_file:
+      - .env
+    networks:
+      - app-tier
+
+  kafka:
+    image: 'bitnami/kafka:latest'
+    ports:
+      - '9092:9092'
+    depends_on:
+      - zookeeper
+    env_file:
+      - .env
+    networks:
+      - app-tier
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - '8081:8080'
+    depends_on:
+      - kafka
+      - zookeeper
+    env_file:
+      - .env
+    networks:
+      - app-tier
+
 
 volumes:
   mongo:
