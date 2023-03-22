@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from src.core.redis_setup import cache
 from src.utils import send_to_kafka
 
 from .schemas import LamodaUrlSchema, SectionLimitGenderSchema
@@ -53,6 +54,7 @@ async def scrapper(
     '/lamoda-parser-data',
     status_code=status.HTTP_200_OK
 )
+@cache
 async def lamoda_parser_data(
         service: LamodaOutputDataService = Depends(),
         limit: int = 10,
@@ -64,6 +66,7 @@ async def lamoda_parser_data(
     '/lamoda-api-data',
     status_code=status.HTTP_200_OK
 )
+@cache
 async def lamoda_api_data(
         service: LamodaOutputDataService = Depends(),
         limit: int = 10,
