@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, status
 
+from src.core.redis_setup import cache
 from src.utils import send_to_kafka
 
 from .schemas import OutputDataTwitchSchema
@@ -33,6 +34,7 @@ async def api_scrapper(twitch: TwitchService = Depends()):
     '/twitch-output',
     status_code=status.HTTP_200_OK
 )
+@cache
 async def twitch_output(
         schema: OutputDataTwitchSchema,
         twitch: TwitchOutputDataService = Depends(),

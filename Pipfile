@@ -13,6 +13,7 @@ pydantic = {extras = ["dotenv"], version = "*"}
 kafka-python = "*"
 fastapi-utils = "*"
 loguru = "*"
+redis = "*"
 
 [dev-packages]
 flake8 = "*"
