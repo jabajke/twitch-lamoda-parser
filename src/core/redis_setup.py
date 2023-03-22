@@ -1,4 +1,5 @@
 import json
+from ast import literal_eval
 from functools import wraps
 
 import redis.asyncio as aioredis
@@ -20,11 +21,14 @@ def cache(func):
         key = f'{func.__name__}:{args}:{kwargs}'
         result = await redis_client.get(key)
         if result is None:
-            logger.warning('Im in cache')
+            logger.warning('Cache Hit')
             result = json.loads(json_util.dumps(await func(*args, **kwargs)))
             await redis_client.set(key, str(result), ex=60 * 5)
         else:
-            logger.warning('ALREADY CACHED')
-        return result
+            logger.warning('Already Cached')
+        return result if isinstance(result, list) else json.loads(
+            json.dumps(
+                literal_eval(result.decode('utf-8'))
+            ))
 
     return wrapper

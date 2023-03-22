@@ -54,6 +54,7 @@ async def scrapper(
     '/lamoda-parser-data',
     status_code=status.HTTP_200_OK
 )
+@cache
 async def lamoda_parser_data(
         service: LamodaOutputDataService = Depends(),
         limit: int = 10,
