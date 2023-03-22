@@ -21,11 +21,11 @@ def cache(func):
         key = f'{func.__name__}:{args}:{kwargs}'
         result = await redis_client.get(key)
         if result is None:
-            logger.warning('Cache Hit')
+            logger.info('Cache Hit')
             result = json.loads(json_util.dumps(await func(*args, **kwargs)))
             await redis_client.set(key, str(result), ex=60 * 5)
         else:
-            logger.warning('Already Cached')
+            logger.info('Already Cached')
         return result if isinstance(result, list) else json.loads(
             json.dumps(
                 literal_eval(result.decode('utf-8'))
